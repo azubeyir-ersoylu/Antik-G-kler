@@ -1,0 +1,21 @@
+{
+  "name": "antik-gokler",
+  "version": "2.0.0",
+  "description": "Antik Göklerin Sırları — belgelenmiş UFO vakaları ve kadim yapılar arşivi. Express + SQLite backend, modern frontend.",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "seed": "node src/db.js --reseed",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "keywords": ["ufo", "uap", "arkeoloji", "belgesel", "express", "sqlite"],
+  "license": "MIT",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
