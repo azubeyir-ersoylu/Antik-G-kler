@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Antik Göklerin Sırları — Belgelenmiş Gizemler Arşivi</title>
+<meta name="description" content="Belgelenmiş UFO vakaları ve kadim yapılar arşivi: Roswell'den Göbekli Tepe'ye, tanıklar, koordinatlar ve resmi belgelerle 11.600 yıllık gizem dosyası.">
+<meta property="og:title" content="Antik Göklerin Sırları">
+<meta property="og:description" content="Belgelenmiş UFO vakaları ve kadim yapılar arşivi — belgeler, tanıklar, koordinatlar.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✦</text></svg>">
+</head>
+<body>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="nav-logo" href="/"><span class="star">✦</span> Antik Göklerin Sırları</a>
+    <button class="nav-toggle" aria-label="Menüyü aç/kapat" aria-expanded="false" aria-controls="nav-menu"><span></span></button>
+    <ul class="nav-links" id="nav-menu">
+      <li><a href="#arsiv">Arşiv</a></li>
+      <li><a href="#zaman-tuneli">Zaman Tüneli</a></li>
+      <li><a href="#topluluk">Gözlem Bildirimleri</a></li>
+      <li><a href="#iletisim">İletişim</a></li>
+      <li><a href="#gozlem-bildir" class="nav-cta">Gözlem Bildir</a></li>
+    </ul>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-bg"></div>
+  <canvas class="hero-stars" aria-hidden="true"></canvas>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-badge">✦ &nbsp;Belgelenmiş Gizemler Arşivi</div>
+    <h1>Antik Göklerin<br><em>Sırları</em></h1>
+    <p class="hero-sub">
+      İnsanlığın binlerce yıldır gözlemlediği, hiçbir zaman tam olarak
+      açıklanamayan gökyüzü olayları ve kadim yapılar.
+      Belgeler, tanıklar, koordinatlar — tek arşivde.
+    </p>
+    <div class="hero-stats" id="hero-stats">
+      <div class="hero-stat"><span class="num" data-stat="events">—</span><span class="lbl">Dosya</span></div>
+      <div class="hero-stat"><span class="num" data-stat="yearsSpanned">—</span><span class="lbl">Yıllık Kapsam</span></div>
+      <div class="hero-stat"><span class="num" data-stat="witnesses">100+</span><span class="lbl">Tanık</span></div>
+      <div class="hero-stat"><span class="num">0</span><span class="lbl">Kesin Açıklama</span></div>
+    </div>
+    <div class="hero-cta">
+      <a href="#arsiv" class="btn btn-fill">Arşivi Keşfet</a>
+      <a href="#gozlem-bildir" class="btn">Gözlem Bildir</a>
+    </div>
+  </div>
+  <div class="scroll-cue">Aşağı Kaydır</div>
+</section>
+
+<!-- ARŞİV -->
+<section class="section" id="arsiv">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Dosyalar</span>
+      <h2>Gizem Arşivi</h2>
+      <p>Resmi belgelere, tanık ifadelerine ve arkeolojik bulgulara dayanan vaka dosyaları.
+         Kategoriye göre filtreleyin ya da arşivde arama yapın.</p>
+    </div>
+    <div class="archive-tools reveal">
+      <div class="filter-group" role="group" aria-label="Kategori filtresi">
+        <button class="chip active" data-filter="">Tümü</button>
+        <button class="chip" data-filter="ufo">UFO Vakaları</button>
+        <button class="chip" data-filter="ancient">Kadim Yapılar</button>
+      </div>
+      <div class="search-wrap">
+        <input type="search" id="archive-search" placeholder="Arşivde ara… (ör. Roswell)" aria-label="Arşivde ara">
+      </div>
+    </div>
+    <div class="cards" id="event-grid" aria-live="polite">
+      <div class="loading">Arşiv yükleniyor…</div>
+    </div>
+  </div>
+</section>
+
+<!-- ALINTI -->
+<div class="quote-band reveal">
+  <blockquote>
+    Gökyüzünü incelemeyen bir millet kendi tarihinin yalnızca yarısını bilir.
+    Antik atalarımız bunu biliyordu — bu yüzden taşları yıldızlara hizaladılar.
+  </blockquote>
+  <p class="quote-attr">— Anonim Arkeolog</p>
+</div>
+
+<!-- ZAMAN TÜNELİ -->
+<section class="section section-alt" id="zaman-tuneli">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Kronoloji</span>
+      <h2>Zaman Tüneli</h2>
+      <p>MÖ 9600'deki Göbekli Tepe'den 2004 Nimitz karşılaşmasına — 11.600 yılı aşan bir gizem hattı.</p>
+    </div>
+    <ol class="timeline reveal" id="timeline">
+      <li class="loading">Yükleniyor…</li>
+    </ol>
+  </div>
+</section>
+
+<!-- TOPLULUK GÖZLEMLERI + GÖZLEM BİLDİR -->
+<section class="section" id="topluluk">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Topluluk</span>
+      <h2>Gözlem Bildirimleri</h2>
+      <p>Siz de açıklayamadığınız bir şey mi gördünüz? Bildirin — editör onayından geçen
+         gözlemler burada arşivlenir.</p>
+    </div>
+    <div class="form-grid">
+      <div class="reveal" id="gozlem-bildir">
+        <form class="form-card" id="report-form" novalidate>
+          <h3>Gözlem Bildir</h3>
+          <p>Kimlik bilgileriniz yayımlanmaz; yalnızca adınız ve konum görünür.</p>
+          <div class="field">
+            <label for="rf-name">Adınız *</label>
+            <input id="rf-name" name="name" type="text" maxlength="80" required>
+            <span class="err"></span>
+          </div>
+          <div class="field">
+            <label for="rf-email">E-posta (isteğe bağlı)</label>
+            <input id="rf-email" name="email" type="email" maxlength="254">
+            <span class="err"></span>
+          </div>
+          <div class="field">
+            <label for="rf-location">Gözlem Konumu *</label>
+            <input id="rf-location" name="location" type="text" maxlength="120" placeholder="ör. Şanlıurfa, Türkiye" required>
+            <span class="err"></span>
+          </div>
+          <div class="field">
+            <label for="rf-date">Gözlem Tarihi *</label>
+            <input id="rf-date" name="sighted_at" type="date" required>
+            <span class="err"></span>
+          </div>
+          <div class="field">
+            <label for="rf-desc">Ne Gördünüz? *</label>
+            <textarea id="rf-desc" name="description" maxlength="2000" required></textarea>
+            <span class="err"></span>
+          </div>
+          <button class="btn btn-fill" type="submit">Bildirimi Gönder</button>
+          <p class="form-msg" role="status"></p>
+        </form>
+      </div>
+      <div class="reveal">
+        <h3 style="color:#fff;font-size:1.3rem;">Onaylanmış Son Gözlemler</h3>
+        <div class="report-list" id="report-list">
+          <p class="empty-state" style="padding:2rem 0;text-align:left;">Henüz yayımlanmış gözlem yok — ilk bildirimi siz yapın.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BÜLTEN -->
+<section class="newsletter-band reveal">
+  <div class="container">
+    <h2 class="display">Yeni Dosyalardan Haberdar Olun</h2>
+    <p>Arşive yeni bir vaka eklendiğinde ya da bir dosyada gelişme olduğunda e-postayla bildirelim. Reklam yok, spam yok.</p>
+    <form class="newsletter-form" id="newsletter-form" novalidate>
+      <input type="email" name="email" placeholder="e-posta adresiniz" aria-label="E-posta adresiniz" required>
+      <button class="btn btn-fill" type="submit">Abone Ol</button>
+    </form>
+    <p class="form-msg" role="status" style="margin-top:1.25rem;"></p>
+  </div>
+</section>
+
+<!-- İLETİŞİM -->
+<section class="section section-alt" id="iletisim">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">İletişim</span>
+      <h2>Bize Ulaşın</h2>
+      <p>Arşivdeki bir dosyaya katkınız, düzeltme öneriniz ya da yayın talebiniz için yazın.</p>
+    </div>
+    <div class="form-grid">
+      <form class="form-card reveal" id="contact-form" novalidate>
+        <h3>Mesaj Gönder</h3>
+        <p>Tüm alanlar zorunludur.</p>
+        <div class="field">
+          <label for="cf-name">Adınız *</label>
+          <input id="cf-name" name="name" type="text" maxlength="80" required>
+          <span class="err"></span>
+        </div>
+        <div class="field">
+          <label for="cf-email">E-posta *</label>
+          <input id="cf-email" name="email" type="email" maxlength="254" required>
+          <span class="err"></span>
+        </div>
+        <div class="field">
+          <label for="cf-subject">Konu *</label>
+          <input id="cf-subject" name="subject" type="text" maxlength="150" required>
+          <span class="err"></span>
+        </div>
+        <div class="field">
+          <label for="cf-body">Mesajınız *</label>
+          <textarea id="cf-body" name="body" maxlength="3000" required></textarea>
+          <span class="err"></span>
+        </div>
+        <button class="btn btn-fill" type="submit">Gönder</button>
+        <p class="form-msg" role="status"></p>
+      </form>
+      <div class="reveal">
+        <h3 style="color:#fff;font-size:1.3rem;margin-bottom:1rem;">Arşiv Hakkında</h3>
+        <p style="color:var(--muted);font-size:0.92rem;line-height:1.9;">
+          Antik Göklerin Sırları, kamuya açık resmi belgeler, gazete arşivleri ve
+          hakemli yayınlardan derlenen vaka dosyalarını tek çatı altında toplayan
+          bağımsız bir belgesel arşividir. Amacımız sansasyon değil, belgedir:
+          her dosyanın sonunda birincil kaynağı bulursunuz.
+        </p>
+        <p style="color:var(--muted);font-size:0.92rem;line-height:1.9;margin-top:1rem;">
+          Arşiv sürekli büyümektedir. Elinizde bir dosyayı güçlendirecek belge,
+          fotoğraf ya da tanıklık varsa iletişim formundan bize ulaşın.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo">✦ Antik Göklerin Sırları</div>
+        <p>Belgelenmiş gökyüzü olayları ve kadim yapılar arşivi.
+           Tüm bilgiler kamuya açık kaynaklardan derlenmiştir; her dosyada
+           birincil kaynak belirtilir.</p>
+      </div>
+      <div>
+        <h4>Keşfet</h4>
+        <ul>
+          <li><a href="#arsiv">Gizem Arşivi</a></li>
+          <li><a href="#zaman-tuneli">Zaman Tüneli</a></li>
+          <li><a href="#topluluk">Gözlem Bildirimleri</a></li>
+          <li><a href="#iletisim">İletişim</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Kategoriler</h4>
+        <ul>
+          <li><a href="#arsiv" data-filter-link="ufo">UFO Vakaları</a></li>
+          <li><a href="#arsiv" data-filter-link="ancient">Kadim Yapılar</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> Antik Göklerin Sırları — Belgesel amaçlıdır.</span>
+      <span>Fotoğraflar: <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a> · <a href="#hero">Başa Dön ↑</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/main.js" defer></script>
+<script src="/js/app.js" defer></script>
+</body>
+</html>
