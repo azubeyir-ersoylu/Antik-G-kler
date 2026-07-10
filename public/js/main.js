@@ -29,6 +29,7 @@ window.AGS = {
     return `
       <a class="card reveal in" href="/event.html?dosya=${encodeURIComponent(ev.slug)}">
         <div class="card-media">
+          <canvas data-chart-seed="${esc(ev.slug)}" data-chart-warm="${ev.category === 'ancient' ? 1 : 0}" aria-hidden="true"></canvas>
           <img src="${esc(ev.image)}" alt="${esc(ev.image_alt)}" loading="lazy">
           <span class="card-year">${esc(ev.year_display)}</span>
         </div>

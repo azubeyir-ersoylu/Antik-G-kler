@@ -39,6 +39,7 @@ async function loadEvents() {
       return;
     }
     grid.innerHTML = data.events.map((ev) => AGS.cardHTML(ev)).join('');
+    window.StarChart.hydrate(grid);
   } catch {
     grid.innerHTML = '<p class="empty-state">Arşive şu an ulaşılamıyor. Lütfen sayfayı yenileyin.</p>';
   }

@@ -31,7 +31,17 @@
   const ev = data.event;
   document.title = `${ev.title} — Antik Göklerin Sırları`;
 
-  document.querySelector('.detail-hero .bg').style.backgroundImage = `url("${ev.image}")`;
+  // Hero: fotoğraf yüklenirse üzerine ince takımyıldız katmanı,
+  // yüklenemezse tam yıldız haritası çizilir.
+  const chart = document.getElementById('d-chart');
+  const chartOpts = { seed: ev.slug, warm: ev.category === 'ancient', big: true };
+  const heroImg = new Image();
+  heroImg.onload = () => {
+    document.querySelector('.detail-hero .bg').style.backgroundImage = `url("${ev.image}")`;
+    window.StarChart.draw(chart, { ...chartOpts, overlay: true, alpha: 0.5 });
+  };
+  heroImg.onerror = () => window.StarChart.draw(chart, chartOpts);
+  heroImg.src = ev.image;
 
   const status = show('d-status', ev.status);
   status.className = `badge badge-${ev.status_type}`;
@@ -57,8 +67,9 @@
   }
 
   if (data.related.length > 0) {
-    document.getElementById('d-related').innerHTML =
-      data.related.map((r) => AGS.cardHTML(r)).join('');
+    const relBox = document.getElementById('d-related');
+    relBox.innerHTML = data.related.map((r) => AGS.cardHTML(r)).join('');
     document.getElementById('d-related-wrap').hidden = false;
+    window.StarChart.hydrate(relBox);
   }
 })();

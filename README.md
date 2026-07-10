@@ -14,6 +14,9 @@ Roswell'den Göbekli Tepe'ye 13 vaka dosyası; tanıklar, koordinatlar ve birinc
 - Topluluk **gözlem bildirme** formu ve onaylanmış gözlemler duvarı
 - Bülten aboneliği ve iletişim formu
 - Animasyonlu yıldız tuvali, kaydırma animasyonları, mobil menü, `prefers-reduced-motion` desteği
+- Her dosyaya özel **üretken yıldız haritası** (`public/js/starchart.js`): fotoğraf yüklenene kadar
+  yer tutucu olarak görünür, fotoğraf hiç yüklenemezse kalıcı görsel olur; detay sayfasında
+  fotoğrafın üzerine ince bir takımyıldız katmanı çizilir
 
 **Backend (Express 5 + SQLite)**
 - REST API — olaylar, gözlem bildirimleri, iletişim, bülten, istatistikler
