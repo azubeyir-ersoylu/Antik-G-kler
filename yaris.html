@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Şeritli Araba Yarışı</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    background:#0b1020;color:#e8ecff;
+    font-family:'Segoe UI',system-ui,sans-serif;
+    min-height:100vh;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:14px;padding:16px;
+  }
+  h1{font-size:1.4rem;letter-spacing:1px;color:#ffd166}
+  .wrap{position:relative;width:100%;max-width:920px}
+  canvas{
+    width:100%;height:auto;display:block;
+    background:#3a3f4b;border-radius:12px;
+    box-shadow:0 10px 40px rgba(0,0,0,.5);
+  }
+  .hud{
+    display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center;
+  }
+  button{
+    background:#ffd166;color:#0b1020;border:none;
+    padding:10px 20px;border-radius:8px;font-size:1rem;
+    font-weight:700;cursor:pointer;transition:transform .1s,filter .1s;
+  }
+  button:hover{filter:brightness(1.08)}
+  button:active{transform:translateY(1px)}
+  button:disabled{opacity:.5;cursor:not-allowed}
+  .hint{font-size:.85rem;color:#9aa4c7}
+  /* Ortadaki büyük mesaj (geri sayım / kazanan) */
+  .overlay{
+    position:absolute;inset:0;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:10px;
+    pointer-events:none;text-shadow:0 3px 12px rgba(0,0,0,.7);
+  }
+  .overlay .big{font-size:clamp(2.5rem,10vw,5rem);font-weight:900;color:#fff}
+  .overlay .sub{font-size:clamp(1rem,4vw,1.5rem);color:#ffd166;font-weight:700}
+  .hidden{display:none}
+  .board{
+    display:flex;flex-direction:column;gap:4px;font-size:.85rem;
+    min-width:180px;background:#141a30;padding:10px 14px;border-radius:10px;
+  }
+  .board .row{display:flex;justify-content:space-between;gap:12px}
+  .swatch{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:middle}
+</style>
+</head>
+<body>
+  <h1>🏁 Şeritli Araba Yarışı</h1>
+  <div class="wrap">
+    <canvas id="game" width="920" height="360"></canvas>
+    <div class="overlay" id="overlay">
+      <div class="big" id="bigMsg">Hazır?</div>
+      <div class="sub" id="subMsg">Başlat'a bas</div>
+    </div>
+  </div>
+
+  <div class="hud">
+    <button id="startBtn">Yarışı Başlat</button>
+    <div class="board" id="board"></div>
+  </div>
+  <p class="hint">Sen 1 numaralı (senin) arabasın 🔴 — <b>gaz için Yukarı Ok / Boşluk</b> tuşunu basılı tut. Diğer 4 araba yapay zekâ.</p>
+
+<script>
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+
+const LANES = 5;
+const LANE_H = H / LANES;
+const START_X = 70;               // start çizgisi
+const FINISH_X = W - 60;          // bitiş çizgisi
+const RACE_DIST = FINISH_X - START_X;
+
+const CARS = [
+  { name: 'SEN',     color: '#ff4d4d', player: true  },
+  { name: 'Mavi',    color: '#4d79ff', player: false },
+  { name: 'Yeşil',   color: '#4dd97a', player: false },
+  { name: 'Turuncu', color: '#ff9f43', player: false },
+  { name: 'Mor',     color: '#b36bff', player: false },
+];
+
+let state = 'idle';   // idle | countdown | racing | finished
+let cars = [];
+let finishers = [];   // bitiş sırası
+let countdown = 0;
+let keyDown = false;
+let lastTs = 0;
+
+function resetCars(){
+  finishers = [];
+  cars = CARS.map((c, i) => ({
+    ...c,
+    lane: i,
+    x: START_X,
+    speed: 0,
+    baseSpeed: 90 + Math.random() * 40,   // AI temel hızı (px/sn)
+    finished: false,
+    place: 0,
+  }));
+}
+
+// --- Çizim ---
+function drawTrack(){
+  // asfalt
+  ctx.fillStyle = '#3a3f4b';
+  ctx.fillRect(0, 0, W, H);
+
+  // şerit ayırıcı kesikli çizgiler
+  ctx.strokeStyle = 'rgba(255,255,255,.5)';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([18, 16]);
+  for (let i = 1; i < LANES; i++){
+    const y = i * LANE_H;
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(W, y);
+    ctx.stroke();
+  }
+  ctx.setLineDash([]);
+
+  // start çizgisi
+  ctx.strokeStyle = 'rgba(255,255,255,.8)';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(START_X, 0); ctx.lineTo(START_X, H); ctx.stroke();
+
+  // bitiş çizgisi (dama deseni)
+  const sq = 12;
+  for (let y = 0; y < H; y += sq){
+    for (let k = 0; k < 2; k++){
+      const on = ((Math.floor(y / sq) + k) % 2) === 0;
+      ctx.fillStyle = on ? '#fff' : '#111';
+      ctx.fillRect(FINISH_X + k * sq, y, sq, sq);
+    }
+  }
+}
+
+function drawCar(car){
+  const y = car.lane * LANE_H + LANE_H / 2;
+  const w = 46, h = 24;
+  const x = car.x;
+
+  // gölge
+  ctx.fillStyle = 'rgba(0,0,0,.25)';
+  ctx.beginPath();
+  ctx.ellipse(x, y + h/2 + 3, w/2, 6, 0, 0, Math.PI*2);
+  ctx.fill();
+
+  // gövde
+  ctx.fillStyle = car.color;
+  roundRect(x - w/2, y - h/2, w, h, 6);
+  ctx.fill();
+
+  // kabin
+  ctx.fillStyle = 'rgba(255,255,255,.75)';
+  roundRect(x - w/2 + 12, y - h/2 + 4, 16, h - 8, 3);
+  ctx.fill();
+
+  // tekerler
+  ctx.fillStyle = '#111';
+  ctx.fillRect(x - w/2 + 4,  y - h/2 - 3, 10, 4);
+  ctx.fillRect(x - w/2 + 4,  y + h/2 - 1, 10, 4);
+  ctx.fillRect(x + w/2 - 14, y - h/2 - 3, 10, 4);
+  ctx.fillRect(x + w/2 - 14, y + h/2 - 1, 10, 4);
+
+  // numara
+  ctx.fillStyle = '#000';
+  ctx.font = 'bold 12px system-ui';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(String(car.lane + 1), x, y);
+}
+
+function roundRect(x, y, w, h, r){
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+function render(){
+  drawTrack();
+  cars.forEach(drawCar);
+}
+
+// --- Skor tablosu ---
+function updateBoard(){
+  const board = document.getElementById('board');
+  const ranked = [...cars].sort((a, b) => {
+    if (a.finished && b.finished) return a.place - b.place;
+    if (a.finished) return -1;
+    if (b.finished) return 1;
+    return b.x - a.x;
+  });
+  board.innerHTML = ranked.map((c, i) => {
+    const pct = Math.min(100, Math.round(((c.x - START_X) / RACE_DIST) * 100));
+    const status = c.finished ? `${c.place}. 🏁` : `%${pct}`;
+    return `<div class="row"><span><span class="swatch" style="background:${c.color}"></span>${c.name}</span><span>${status}</span></div>`;
+  }).join('');
+}
+
+// --- Oyun döngüsü ---
+function tick(ts){
+  const dt = Math.min(0.05, (ts - lastTs) / 1000 || 0);
+  lastTs = ts;
+
+  if (state === 'racing'){
+    for (const car of cars){
+      if (car.finished) continue;
+
+      if (car.player){
+        // gaz tuşu basılıysa hızlan, değilse yavaşla
+        const target = keyDown ? 210 : 60;
+        car.speed += (target - car.speed) * Math.min(1, dt * 3);
+      } else {
+        // AI: temel hız + küçük rastgele dalgalanma
+        car.baseSpeed += (Math.random() - 0.5) * 30 * dt * 10;
+        car.baseSpeed = Math.max(70, Math.min(200, car.baseSpeed));
+        car.speed = car.baseSpeed;
+      }
+
+      car.x += car.speed * dt;
+
+      if (car.x >= FINISH_X){
+        car.x = FINISH_X;
+        car.finished = true;
+        finishers.push(car);
+        car.place = finishers.length;
+      }
+    }
+
+    updateBoard();
+
+    if (cars.every(c => c.finished)){
+      state = 'finished';
+      showWinner();
+    }
+  }
+
+  render();
+  requestAnimationFrame(tick);
+}
+
+// --- Geri sayım ---
+function startCountdown(){
+  resetCars();
+  updateBoard();
+  state = 'countdown';
+  countdown = 3;
+  document.getElementById('startBtn').disabled = true;
+  const overlay = document.getElementById('overlay');
+  overlay.classList.remove('hidden');
+
+  const step = () => {
+    const big = document.getElementById('bigMsg');
+    const sub = document.getElementById('subMsg');
+    if (countdown > 0){
+      big.textContent = countdown;
+      sub.textContent = 'Hazır ol...';
+      countdown--;
+      setTimeout(step, 800);
+    } else {
+      big.textContent = 'GİT!';
+      sub.textContent = 'Gaz için ↑ / Boşluk';
+      state = 'racing';
+      lastTs = performance.now();
+      setTimeout(() => overlay.classList.add('hidden'), 600);
+    }
+  };
+  step();
+}
+
+function showWinner(){
+  const winner = finishers[0];
+  const overlay = document.getElementById('overlay');
+  const big = document.getElementById('bigMsg');
+  const sub = document.getElementById('subMsg');
+  big.textContent = winner.player ? '🏆 KAZANDIN!' : `${winner.name} kazandı`;
+  const order = finishers.map((c, i) => `${i + 1}.${c.name}`).join('  ');
+  sub.textContent = order;
+  overlay.classList.remove('hidden');
+  document.getElementById('startBtn').disabled = false;
+  document.getElementById('startBtn').textContent = 'Tekrar Yarış';
+}
+
+// --- Girdi ---
+function onKey(down){
+  return (e) => {
+    if (e.code === 'ArrowUp' || e.code === 'Space'){
+      e.preventDefault();
+      keyDown = down;
+    }
+  };
+}
+window.addEventListener('keydown', onKey(true));
+window.addEventListener('keyup', onKey(false));
+// dokunmatik: ekrana basılı tut = gaz
+canvas.addEventListener('touchstart', e => { e.preventDefault(); keyDown = true; }, {passive:false});
+canvas.addEventListener('touchend',   e => { e.preventDefault(); keyDown = false; }, {passive:false});
+canvas.addEventListener('mousedown', () => keyDown = true);
+window.addEventListener('mouseup', () => keyDown = false);
+
+document.getElementById('startBtn').addEventListener('click', () => {
+  if (state === 'idle' || state === 'finished') startCountdown();
+});
+
+// başlangıç
+resetCars();
+updateBoard();
+render();
+requestAnimationFrame(tick);
+</script>
+</body>
+</html>
